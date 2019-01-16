@@ -1,17 +1,15 @@
-// get data from firestore
-db.collection("guides")
-  .get()
-  .then(snapshot => {
-    // console.log(snapshot.docs);
-    setupGuides(snapshot.docs);
-  });
-
 // Listen for auth status changes
 auth.onAuthStateChanged(user => {
   if (user) {
-    console.log(user.email);
+    // get data from firestore
+    db.collection("guides")
+      .get()
+      .then(snapshot => {
+        // console.log(snapshot.docs);
+        setupGuides(snapshot.docs);
+      });
   } else {
-    console.log("Signed Out");
+    setupGuides([]);
   }
 });
 
