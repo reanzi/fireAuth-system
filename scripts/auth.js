@@ -2,12 +2,14 @@
 auth.onAuthStateChanged(user => {
   if (user) {
     // get data from firestore
-    db.collection("guides").onSnapshot(snapshot => {
-      // console.log(snapshot.docs);
-      setupGuides(snapshot.docs);
-      setupUI(user);
-    });
-    //   .catch(err => console.log(err.message));
+    db.collection("guides").onSnapshot(
+      snapshot => {
+        // console.log(snapshot.docs);
+        setupGuides(snapshot.docs);
+        setupUI(user);
+      },
+      err => console.log(err.message)
+    );
   } else {
     setupUI();
     setupGuides([]);
@@ -42,13 +44,22 @@ signupForm.addEventListener("submit", e => {
   //get user inputs
   const email = signupForm["signup-email"].value;
   const password = signupForm["signup-password"].value;
+  const bio = signupForm["signup-bio"].value;
 
   // signup a user
   auth
     .createUserWithEmailAndPassword(email, password)
     .then(cred => {
-      //   console.log(cred.user);
-
+      // we return to avoid nesting .next's
+      //   we use 'set' instead of 'add()' add create uid
+      return db
+        .collection("users")
+        .doc(cred.user.uid)
+        .set({
+          bio
+        });
+    })
+    .then(() => {
       //close the modal and reset form
       const modal = document.querySelector("#modal-signup");
       M.Modal.getInstance(modal).close();
