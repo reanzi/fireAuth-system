@@ -6,7 +6,7 @@ adminForm.addEventListener("submit", e => {
   const adminEmail = document.querySelector("#admin-email").value;
   const addAdminRole = functions.httpsCallable("addAdminRole");
   addAdminRole({ email: adminEmail }).then(response => {
-    console.log(response.data.message);
+    // console.log(response.data.message);
     M.toast({
       html: response.data.message,
       classes: "orange",
@@ -32,7 +32,8 @@ auth.onAuthStateChanged(user => {
         setupGuides(snapshot.docs);
         // console.log(user.email);
       },
-      err => console.log(err.message)
+      err =>
+        M.toast({ html: err.message, classes: "orange", displayLength: 3000 })
     );
   } else {
     setupUI();
