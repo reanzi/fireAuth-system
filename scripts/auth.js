@@ -18,13 +18,19 @@ adminForm.addEventListener("submit", e => {
 // Listen for auth status changes
 auth.onAuthStateChanged(user => {
   if (user) {
+    // check if user exist & has admin role
+    user.getIdTokenResult().then(idTokenResult => {
+      // console.log(idTokenResult.claims.admin); // to get true/false
+      user.admin = idTokenResult.claims.admin;
+      setupUI(user);
+    });
+
     // get data from firestore
     db.collection("guides").onSnapshot(
       snapshot => {
         // console.log(snapshot.docs);
         setupGuides(snapshot.docs);
-        setupUI(user);
-        console.log(user.email);
+        // console.log(user.email);
       },
       err => console.log(err.message)
     );
